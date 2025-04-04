@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniHub - Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border-left: 5px solid #0066cc;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .nav-item {
+            flex: 1;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+        .nav-item:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        .nav-item.active {
+            border-left: 4px solid #0066cc;
+        }
+        .nav-item h3 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        .nav-item p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #0055aa;
+        }
+        .tech-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #e9ecef;
+            color: #495057;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>UniHub - Documentation de la Plateforme</h1>
+        <p>Choisissez le type de documentation qui correspond à vos besoins.</p>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav-item">
+            <h3>Documentation Générale</h3>
+            <p>Une vue d'ensemble de tous les services et fonctionnalités pour les utilisateurs et administrateurs de la plateforme.</p>
+            <span class="tech-badge">Utilisateurs</span>
+            <span class="tech-badge">Administrateurs</span>
+            <span class="tech-badge">Vue d'ensemble</span>
+            <p><a href="README.md" class="btn">Consulter</a></p>
+        </div>
+        
+        <div class="nav-item active">
+            <h3>Documentation Technique</h3>
+            <p>Documentation détaillée des API et points d'accès pour les développeurs travaillant sur l'intégration ou l'extension des services.</p>
+            <span class="tech-badge">API</span>
+            <span class="tech-badge">Endpoints</span>
+            <span class="tech-badge">JSON</span>
+            <span class="tech-badge">Développeurs</span>
+            <p><a href="README_DEV.md" class="btn">Consulter</a></p>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <h2>Documentation des Services UniHub</h2>
+        <p>
+            La plateforme UniHub est composée de plusieurs microservices qui travaillent ensemble pour fournir
+            une expérience complète aux utilisateurs. Cette documentation est organisée en deux sections principales pour
+            répondre aux besoins de différents publics.
+        </p>
+        <ul>
+            <li><strong>Documentation Générale</strong> - Pour les utilisateurs et administrateurs de la plateforme qui ont besoin de comprendre les fonctionnalités et l'utilisation générale.</li>
+            <li><strong>Documentation Technique</strong> - Pour les développeurs qui ont besoin de détails précis sur les API, formats de données et intégrations.</li>
+        </ul>
+    </div>
+</body>
+</html> 
