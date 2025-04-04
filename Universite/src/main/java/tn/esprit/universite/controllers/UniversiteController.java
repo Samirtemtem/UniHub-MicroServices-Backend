@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tn.esprit.universite.services.FileStorageService;
 import tn.esprit.universite.services.IUniversiteService;
 import tn.esprit.universite.entities.Universite;
+import tn.esprit.universite.SMS.SmsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +20,15 @@ public class UniversiteController {
 
     private final IUniversiteService universiteService;
     private final FileStorageService fileStorageService;
+    private final SmsService smsService; // Corrected variable name
 
     @Autowired
-    public UniversiteController(IUniversiteService universiteService, FileStorageService fileStorageService) {
+    public UniversiteController(IUniversiteService universiteService,
+                                FileStorageService fileStorageService,
+                                SmsService smsService) { // Added smsService to constructor
         this.universiteService = universiteService;
         this.fileStorageService = fileStorageService;
+        this.smsService = smsService; // Initialize the SmsService
     }
 
     @PostMapping("/adduniversite")
@@ -34,8 +39,12 @@ public class UniversiteController {
                 return ResponseEntity.badRequest().body("Universite cannot be null");
             }
 
-            // Call the service method with both arguments
             Universite result = universiteService.addUniversite(universite, imageFile);
+
+            // Send SMS notification using the university's phone number
+            String messageBody = "You have been added to UNIHUB: " + result.getNomUniversite();
+            // Convert int to String when sending SMS
+            smsService.sendSms(String.valueOf(result.getTelUniversite()), messageBody); // Use the correct SmsService instance
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
@@ -51,12 +60,12 @@ public class UniversiteController {
             if (id == null) {
                 return ResponseEntity.badRequest().body("ID cannot be null");
             }
-            
+
             Universite result = universiteService.getUniversite(id);
             if (result == null) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -75,17 +84,18 @@ public class UniversiteController {
     }
 
     @PatchMapping("/universite")
-    public ResponseEntity<?> updateUniversite(@ModelAttribute Universite universite, @RequestParam(value = "file", required = false) MultipartFile imageFile) {
+    public ResponseEntity<?> updateUniversite(@ModelAttribute Universite universite,
+                                              @RequestParam(value = "file", required = false) MultipartFile imageFile) {
         try {
             if (universite == null) {
                 return ResponseEntity.badRequest().body("Universite cannot be null");
             }
-            
+
             if (imageFile != null && !imageFile.isEmpty()) {
                 String image = fileStorageService.storeFile(imageFile);
                 universite.setImage(image);
             }
-            
+
             Universite result = universiteService.updateUniversite(universite, imageFile);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
@@ -105,13 +115,13 @@ public class UniversiteController {
         }
     }
 
-    @GetMapping("/searchUnivarsite/{nomUniversite}")
+    @GetMapping("/searchUniversite/{nomUniversite}")
     public ResponseEntity<List<Universite>> rechercherParNom(@PathVariable String nomUniversite) {
         try {
             if (nomUniversite == null || nomUniversite.isEmpty()) {
                 return ResponseEntity.badRequest().body(new ArrayList<>());
             }
-            
+
             List<Universite> result = universiteService.rechercherParNom(nomUniversite);
             return ResponseEntity.ok(result != null ? result : new ArrayList<>());
         } catch (Exception e) {
@@ -119,4 +129,3 @@ public class UniversiteController {
         }
     }
 }
-
