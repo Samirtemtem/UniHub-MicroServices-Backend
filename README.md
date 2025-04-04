@@ -122,7 +122,7 @@ docker-compose up -d
 Ou exécuter des services individuels:
 
 ```bash
-docker-compose up -d eureka mysql-db news gateway universite event specialite restaurant
+docker-compose up -d eureka mysql-db  gateway universite 
 ``` 
 
 ## Ressources supplémentaires pour développeurs
