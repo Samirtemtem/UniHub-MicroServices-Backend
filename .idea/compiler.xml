@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Universite" />
         <module name="EurekaD" />
+        <module name="MS-specialite" />
         <module name="Foyer" />
         <module name="MS-Specialite" />
         <module name="Event-MS" />
@@ -28,7 +29,9 @@
       <module name="Foyer" options="-parameters" />
       <module name="GestionChambre" options="-parameters" />
       <module name="MS-Specialite" options="-parameters" />
+      <module name="MS-specialite" options="-parameters" />
       <module name="RestaurantMs" options="-parameters" />
+      <module name="UniHub-News" options="-parameters" />
       <module name="Universite" options="-parameters" />
     </option>
   </component>
