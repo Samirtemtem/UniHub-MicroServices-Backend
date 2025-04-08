@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.universite.entities.Universite;
+import tn.esprit.universite.Mail.Mail; // Import your Mail service
 import tn.esprit.universite.services.FileStorageService;
 import tn.esprit.universite.services.IUniversiteService;
-import tn.esprit.universite.entities.Universite;
 import tn.esprit.universite.SMS.SmsService;
 
 import java.util.ArrayList;
@@ -20,15 +21,18 @@ public class UniversiteController {
 
     private final IUniversiteService universiteService;
     private final FileStorageService fileStorageService;
-    private final SmsService smsService; // Corrected variable name
+    private final SmsService smsService;
+    private final Mail mailService; // Added Mail service
 
     @Autowired
     public UniversiteController(IUniversiteService universiteService,
                                 FileStorageService fileStorageService,
-                                SmsService smsService) { // Added smsService to constructor
+                                SmsService smsService,
+                                Mail mailService) { // Inject Mail service
         this.universiteService = universiteService;
         this.fileStorageService = fileStorageService;
-        this.smsService = smsService; // Initialize the SmsService
+        this.smsService = smsService;
+        this.mailService = mailService; // Initialize Mail service
     }
 
     @PostMapping("/adduniversite")
@@ -41,10 +45,14 @@ public class UniversiteController {
 
             Universite result = universiteService.addUniversite(universite, imageFile);
 
-            // Send SMS notification using the university's phone number
-            String messageBody = "You have been added to UNIHUB: " + result.getNomUniversite();
-            // Convert int to String when sending SMS
-            smsService.sendSms(String.valueOf(result.getTelUniversite()), messageBody); // Use the correct SmsService instance
+            // Send SMS notification
+            //String smsMessageBody = "You have been added to UNIHUB: " + result.getNomUniversite();
+            //smsService.sendSms(String.valueOf(result.getTelUniversite()), smsMessageBody);
+
+            // Send email notification
+            String emailSubject = "Welcome to UNIHUB!";
+            String emailBody = "Dear " + result.getNomUniversite() + ",\n\nYou have been successfully added to UNIHUB.";
+            mailService.sendStockNotification(result.getEmailUinversite(), emailSubject, emailBody); // Ensure you have an email field
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
