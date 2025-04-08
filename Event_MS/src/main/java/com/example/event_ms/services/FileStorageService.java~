@@ -17,16 +17,12 @@ public class FileStorageService {
 
     public String storeFile(MultipartFile file) {
         try {
-            // Upload the image to Cloudinary under the "events" folder
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
                     ObjectUtils.asMap("folder", "events"));
 
-            // Get the secure URL of the uploaded image
             return (String) uploadResult.get("secure_url");
         } catch (IOException e) {
-            // Handle the error properly
             throw new RuntimeException("Failed to upload image to Cloudinary", e);
         }
     }
 }
-

@@ -44,13 +44,27 @@ public class EvenementController {
     public Evenement updateEvent(@RequestBody Evenement event) {
         return this.eventService.updateEvent(event);
     }
-
+/*
     @CrossOrigin(origins = "*", allowedHeaders = "Requestor-Type", exposedHeaders = "X-Get-Header")
     @PostMapping("/events/uploadImage/{id}")
     public Evenement handleImageFileUpload(@RequestParam("fileImage") MultipartFile fileImage, @PathVariable long id) {
         return eventService.handleImageFileUpload(fileImage, id);
     }
-    
+*/
+@CrossOrigin(origins = "*", allowedHeaders = "Requestor-Type", exposedHeaders = "X-Get-Header")
+@PostMapping("/events/uploadImage/{id}")
+public Evenement handleImageFileUpload(@RequestParam("fileImage") MultipartFile fileImage, @PathVariable long id) {
+    try {
+        return eventService.handleImageFileUpload(fileImage, id);
+    } catch (Exception e) {
+        // Return an appropriate error message
+        System.err.println("Error handling image upload: " + e.getMessage());
+        return null;  // You could return a custom error response here
+    }
+}
+
+
+
     @GetMapping("/sortedByDateAsc")
     public List<Evenement> getAllEventsSortedByDateAsc() {
         return eventService.getAllEventsSortedByDateAsc();

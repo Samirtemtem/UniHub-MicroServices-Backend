@@ -90,7 +90,6 @@ public class EvenementService implements IEvenementService {
     */
 public Evenement handleImageFileUpload(MultipartFile fileImage, long id) {
     try {
-        // Check if the file is empty
         if (fileImage == null || fileImage.isEmpty()) {
             throw new IllegalArgumentException("No file provided for upload");
         }
@@ -103,17 +102,15 @@ public Evenement handleImageFileUpload(MultipartFile fileImage, long id) {
 
         // Upload the image to Cloudinary and get the secure URL
         String fileUrl = fileStorageService.storeFile(fileImage);
-        event.setImageEvent(fileUrl);  // Set the Cloudinary URL in the event entity
+        event.setImageEvent(fileUrl);  // Save the URL in the event entity
 
-        // Save and return the updated event
-        return evenementRepository.save(event);
+        return evenementRepository.save(event);  // Save and return the updated event
 
     } catch (Exception e) {
         System.err.println("Error uploading image for event: " + e.getMessage());
         throw new RuntimeException("Failed to upload image", e);  // Properly handle the exception
     }
 }
-
 
     @Override
     public List<Evenement> getAllEventsSortedByDateAsc() {
