@@ -31,6 +31,7 @@
       <module name="MS-Specialite" options="-parameters" />
       <module name="MS-specialite" options="-parameters" />
       <module name="RestaurantMs" options="-parameters" />
+      <module name="UniHub-News" options="-parameters" />
       <module name="Universite" options="-parameters" />
     </option>
   </component>
