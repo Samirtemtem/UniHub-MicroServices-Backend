@@ -15,6 +15,7 @@
         <module name="Event-MS" />
         <module name="GestionChambre" />
         <module name="RestaurantMs" />
+        <module name="UniHub-News" />
         <module name="ApiGateway" />
         <module name="Educal-News" />
       </profile>

@@ -9,5 +9,7 @@ FROM openjdk:8-jre-slim
 WORKDIR /app
 COPY --from=build /app/target/MS-specialite-0.0.1-SNAPSHOT.jar specialite-img.jar
 EXPOSE 8083
+AhmedBenHmida-EventService
+ADD target/MS-specialite-0.0.1-SNAPSHOT.jar specialite-img.jar
 
 ENTRYPOINT ["java", "-jar", "specialite-img.jar"]
