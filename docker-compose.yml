@@ -1,5 +1,40 @@
 version: "3.9"
 services:
+  # Keycloak and PostgreSQL for authentication
+  postgres-keycloak:
+    image: postgres:13
+    container_name: postgres-keycloak
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - unihub-network
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.1.1
+    container_name: keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-keycloak:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HOSTNAME: localhost
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev
+    ports:
+      - "8180:8080"
+    depends_on:
+      - postgres-keycloak
+    networks:
+      - unihub-network
+    restart: unless-stopped
+
   universite:
     build: .\Universite
     image: "universite-img"
@@ -21,6 +56,24 @@ services:
       - config-server
       - mysql-db
 
+  club-node:
+    build:
+      context: .\MS_club
+      dockerfile: dockerfile
+    image: "club-img"
+    container_name: "club-node"
+    ports:
+      - "3000:3000"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - HOSTNAME=club-node
+      - IP_ADDR=club-node
+      - app_file_storage_mapping=file:/app/upload-directory
+    restart: unless-stopped
+    networks:
+      - unihub-network
+    depends_on:
+      - eureka
   restaurant:
     build: .\restaurant
     image: "restaurant-img"
@@ -143,43 +196,19 @@ services:
       - "8082:8082"
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
-      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-server:8888
-      - spring_cloud_gateway_routes[0]_id=universite
-      - spring_cloud_gateway_routes[0]_uri=http://universite:8084
-      - spring_cloud_gateway_routes[0]_predicates[0]=Path=/universite/**
-
-      - spring_cloud_gateway_routes[1]_id=specialite
-      - spring_cloud_gateway_routes[1]_uri=http://specialite:8083
-      - spring_cloud_gateway_routes[1]_predicates[0]=Path=/specialites/**
-
-      - spring_cloud_gateway_routes[2]_id=event
-      - spring_cloud_gateway_routes[2]_uri=http://event:8087
-      - spring_cloud_gateway_routes[2]_predicates[0]=Path=/event/**
-
-      - spring_cloud_gateway_routes[3]_id=restaurant
-      - spring_cloud_gateway_routes[3]_uri=http://restaurant:8090
-      - spring_cloud_gateway_routes[3]_predicates[0]=Path=/restaurants/**
-
-      - spring_cloud_gateway_routes[4]_id=news
-      - spring_cloud_gateway_routes[4]_uri=http://news:8085
-      - spring_cloud_gateway_routes[4]_predicates[0]=Path=/news/**
-
-      - spring_cloud_gateway_routes[5]_id=static-resources
-      - spring_cloud_gateway_routes[5]_uri=http://news:8085
-      - spring_cloud_gateway_routes[5]_predicates[0]=Path=/upload-directory/**
-      - spring_cloud_gateway_routes[5]_filters[0]=AddResponseHeader=Access-Control-Allow-Origin,*
-      - spring_cloud_gateway_routes[5]_filters[1]=AddResponseHeader=Access-Control-Allow-Methods,GET,POST,OPTIONS
-
+    
     networks:
       - unihub-network
     depends_on:
       - eureka
       - config-server
+      - keycloak
       - universite
       - event
       - news
       - restaurant
       - specialite
+      - club-node
 
   mysql-db:
     image: "mysql:5.6"
@@ -210,3 +239,6 @@ networks:
   unihub-network:
     name: unihub-network
 
+# Define volumes
+volumes:
+  postgres_data:
